@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
     <PackageId>RagSharp</PackageId>
+    <ProjectName>RagSharp.Packaging</ProjectName>
     <Version>0.1.0</Version>
     <Authors>RagSharp</Authors>
     <Description>RagSharp code graph skills installer and CLI tools.</Description>
@@ -18,7 +19,7 @@
     <ProjectReference Include="../RagSharp.SkillInstaller/RagSharp.SkillInstaller.csproj" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../RagSharp.CodeGraph.Cli/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp-codegraph" />
+    <None Include="../RagSharp.CodeGraph.Cli/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp-graph" />
     <None Include="../RagSharp.SkillInstaller/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp" />
   </ItemGroup>
 </Project>

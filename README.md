@@ -1,11 +1,23 @@
 # RagSharp
 
-RagSharp provides a deterministic, offline-capable code graph indexer and skill installer for C#/.NET repositories. It ships a single NuGet package containing:
+RagSharp is a deterministic, offline-capable toolkit for indexing and querying C#/.NET repositories.
+It ships as a single NuGet package that provides two command-line tools:
 
-- `ragsharp` — installer for Codex skills.
-- `ragsharp-codegraph` — code graph indexer/query CLI.
+- `ragsharp` — installs/uninstalls Codex skills into a repository.
+- `ragsharp-graph` — builds and queries a code graph index for fast, structured lookups.
 
 See the Codex skill specification at https://agentskills.io/specification.
+
+## What RagSharp does
+
+RagSharp focuses on repeatable, offline analysis of C# codebases:
+
+- **Indexes** source code and builds a graph of types, members, usings, and relationships.
+- **Queries** the graph (symbols, inheritance, references) and outputs JSON for automation.
+- **Installs skills** that wrap common workflows such as indexing or querying.
+
+All outputs are stored under `.ragsharp/graph/` by default to keep artifacts organized and
+easy to clean up.
 
 ## Requirements
 
@@ -26,7 +38,7 @@ dotnet --list-sdks
 ```bash
 dotnet build
 
-dotnet test
+dotnet test ragsharp.slnx
 ```
 
 ## Package
@@ -45,21 +57,53 @@ dotnet add package RagSharp --source /path/to/ragsharp/dist
 ragsharp install --root . --skill-dir .codex/skills
 ```
 
-## Index and query
+## RagSharp Graph quickstart
+
+Build and query the graph:
 
 ```bash
-ragsharp-codegraph doctor --root .
+ragsharp-graph doctor --root .
 
-ragsharp-codegraph index --root . --db .codegraph/index.db --state .codegraph/state.json
+ragsharp-graph index --root . --db .ragsharp/graph/index.db --state .ragsharp/graph/state.json
 
-ragsharp-codegraph query symbols --db .codegraph/index.db --format json --limit 50 --symbol "Greeter"
+ragsharp-graph query symbols --db .ragsharp/graph/index.db --format json --limit 50 --symbol "Greeter"
 ```
+
+Export the graph:
+
+```bash
+ragsharp-graph export --db .ragsharp/graph/index.db --format dot --out .ragsharp/graph/graph.dot
+```
+
+## CLI reference
+
+### `ragsharp`
+
+- `ragsharp install --root <path> --skill-dir <path>` — install skills.
+- `ragsharp uninstall --root <path> --skill-dir <path>` — uninstall skills.
+
+### `ragsharp-graph`
+
+- `doctor` — verify the environment and print the repository root.
+- `index` — build a fresh index.
+- `update` — incrementally update the index and remove deleted files.
+- `query <type>` — query the index (`symbols`, `usings`, etc.) and emit JSON.
+- `export` — export the graph as `dot` or `gexf`.
 
 ## Output locations
 
 - `.codex/skills/` contains installed skills.
-- `.codegraph/` contains the index and state files (not committed).
-- Ensure `.codegraph/` and `state.json` remain in `.gitignore`.
+- `.ragsharp/graph/` contains the index and state files (not committed).
+- Ensure `.ragsharp/graph/` and `state.json` remain in `.gitignore`.
+
+## Example prompts
+
+Use these with your assistant after indexing:
+
+- “List the top 20 symbols that inherit from `BaseType` in JSON.”
+- “Show usages of `HttpClient` and include 3 context lines.”
+- “Find all public methods in `src/` that return `Task`.”
+- “Export the graph to DOT and summarize the top 10 node kinds.”
 
 ## Troubleshooting
 

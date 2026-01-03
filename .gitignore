@@ -2,7 +2,7 @@ bin/
 obj/
 .vs/
 .idea/
-.codegraph/
+.ragsharp/graph/
 dist/
 artifacts/
 TestResults/

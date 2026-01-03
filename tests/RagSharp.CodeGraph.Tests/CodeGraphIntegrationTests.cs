@@ -115,7 +115,7 @@ internal sealed class IndexTestContext : IAsyncDisposable
 
     public static async Task<IndexTestContext> CreateAsync()
     {
-        var root = Path.Combine(Path.GetTempPath(), $"ragsharp-codegraph-{Guid.NewGuid():N}");
+        var root = Path.Combine(Path.GetTempPath(), $"ragsharp-graph-{Guid.NewGuid():N}");
         Directory.CreateDirectory(root);
 
         var projectDir = Path.Combine(root, "GeneratedProject");
@@ -176,7 +176,7 @@ public sealed class {{name}}
         var indexer = new CodeGraphIndexer(includeDataflow: false);
         var result = await indexer.IndexAsync(projectDir, CancellationToken.None);
 
-        var dbPath = Path.Combine(projectDir, ".codegraph", "index.db");
+        var dbPath = Path.Combine(projectDir, ".ragsharp", "graph", "index.db");
         var store = new LiteGraphStore(dbPath);
         await store.InitializeAsync(CancellationToken.None);
         await store.SaveIndexAsync(result, CancellationToken.None);

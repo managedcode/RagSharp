@@ -5,6 +5,9 @@
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnableTestingPlatform>true</EnableTestingPlatform>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMSBuildTestInfrastructure>true</UseMSBuildTestInfrastructure>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TUnit" Version="1.8.1" />

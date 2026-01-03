@@ -16,7 +16,7 @@ public static class Program
     {
         if (args.Length == 0)
         {
-            Console.Error.WriteLine("ragsharp-codegraph <command> [options]");
+            Console.Error.WriteLine("ragsharp-graph <command> [options]");
             return ExitInvalidArgs;
         }
 
@@ -63,8 +63,8 @@ public static class Program
     private static async Task<int> RunIndexAsync(Dictionary<string, string?> options, bool isUpdate)
     {
         var root = options.GetValueOrDefault("--root") ?? Directory.GetCurrentDirectory();
-        var dbPath = options.GetValueOrDefault("--db") ?? Path.Combine(root, ".codegraph", "index.db");
-        var statePath = options.GetValueOrDefault("--state") ?? Path.Combine(root, ".codegraph", "state.json");
+        var dbPath = options.GetValueOrDefault("--db") ?? Path.Combine(root, ".ragsharp", "graph", "index.db");
+        var statePath = options.GetValueOrDefault("--state") ?? Path.Combine(root, ".ragsharp", "graph", "state.json");
         var includeDataflow = options.ContainsKey("--include-dataflow");
 
         var store = new LiteGraphStore(dbPath);
@@ -99,7 +99,7 @@ public static class Program
 
         var queryType = args[0];
         var options = ParseOptions(args.Skip(1).ToArray());
-        var dbPath = options.GetValueOrDefault("--db") ?? Path.Combine(Directory.GetCurrentDirectory(), ".codegraph", "index.db");
+        var dbPath = options.GetValueOrDefault("--db") ?? Path.Combine(Directory.GetCurrentDirectory(), ".ragsharp", "graph", "index.db");
         if (!File.Exists(dbPath))
         {
             throw new FileNotFoundException("Index database not found.");
@@ -130,9 +130,9 @@ public static class Program
 
     private static async Task<int> RunExportAsync(Dictionary<string, string?> options)
     {
-        var dbPath = options.GetValueOrDefault("--db") ?? Path.Combine(Directory.GetCurrentDirectory(), ".codegraph", "index.db");
+        var dbPath = options.GetValueOrDefault("--db") ?? Path.Combine(Directory.GetCurrentDirectory(), ".ragsharp", "graph", "index.db");
         var format = options.GetValueOrDefault("--format") ?? "dot";
-        var output = options.GetValueOrDefault("--out") ?? Path.Combine(Directory.GetCurrentDirectory(), ".codegraph", "graph.dot");
+        var output = options.GetValueOrDefault("--out") ?? Path.Combine(Directory.GetCurrentDirectory(), ".ragsharp", "graph", "graph.dot");
 
         var store = new LiteGraphStore(dbPath);
         await store.InitializeAsync(CancellationToken.None).ConfigureAwait(false);
@@ -154,7 +154,7 @@ public static class Program
 
     private static void WriteSchemaVersionFile(string root)
     {
-        var schemaPath = Path.Combine(root, ".codegraph", "schema_version");
+        var schemaPath = Path.Combine(root, ".ragsharp", "graph", "schema_version");
         Directory.CreateDirectory(Path.GetDirectoryName(schemaPath) ?? ".");
         File.WriteAllText(schemaPath, SchemaConstants.CurrentVersion);
     }

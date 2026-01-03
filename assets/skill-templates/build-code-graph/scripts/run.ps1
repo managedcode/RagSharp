@@ -1,2 +1,2 @@
 param([string]$Root = ".")
-ragsharp-codegraph index --root $Root --db .codegraph/index.db --state .codegraph/state.json
+ragsharp-graph index --root $Root --db .ragsharp/graph/index.db --state .ragsharp/graph/state.json
