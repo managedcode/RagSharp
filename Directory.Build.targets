@@ -1,0 +1,8 @@
+<Project>
+  <Target Name="_MTPBeforeVSTest" BeforeTargets="VSTest">
+    <PropertyGroup>
+      <_SupportsGlobalJsonTestRunner>false</_SupportsGlobalJsonTestRunner>
+    </PropertyGroup>
+    <CallTarget Condition="'$(VSTestNoBuild)' != 'true' AND '$(TargetFramework)' != ''" Targets="BuildProject" />
+  </Target>
+</Project>

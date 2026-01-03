@@ -1,14 +1,18 @@
-# Code Graph CLI
+# RagSharp Graph CLI
 
 ## Commands
 
-- `ragsharp-codegraph doctor --root <path>`
-- `ragsharp-codegraph index --root <path> --db .codegraph/index.db --state .codegraph/state.json`
-- `ragsharp-codegraph update --root <path> --db .codegraph/index.db --state .codegraph/state.json`
-- `ragsharp-codegraph query <queryType> --db .codegraph/index.db --format json --limit N --context-lines M`
-- `ragsharp-codegraph export --db .codegraph/index.db --format dot|gexf --out .codegraph/graph.dot`
+- `ragsharp-graph doctor --root <path>`
+- `ragsharp-graph index --root <path> --db .ragsharp/graph/index.db --state .ragsharp/graph/state.json`
+- `ragsharp-graph update --root <path> --db .ragsharp/graph/index.db --state .ragsharp/graph/state.json`
+- `ragsharp-graph query <queryType> --db .ragsharp/graph/index.db --format json --limit N --context-lines M`
+- `ragsharp-graph export --db .ragsharp/graph/index.db --format dot|gexf --out .ragsharp/graph/graph.dot`
 
-## Files\n\n- `.codegraph/index.db` — SQLite graph database.\n- `.codegraph/state.json` — incremental index state.\n- `.codegraph/schema_version` — schema version guard.\n+
+## Files
+
+- `.ragsharp/graph/index.db` — SQLite graph database.
+- `.ragsharp/graph/state.json` — incremental index state.
+- `.ragsharp/graph/schema_version` — schema version guard.
 ## Exit codes
 
 - 0: success

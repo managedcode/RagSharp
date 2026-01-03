@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>ragsharp</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <PackageId>RagSharp.SkillInstaller</PackageId>
     <RootNamespace>RagSharp.SkillInstaller</RootNamespace>
   </PropertyGroup>
   <ItemGroup>

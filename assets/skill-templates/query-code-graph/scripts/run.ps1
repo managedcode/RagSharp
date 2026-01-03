@@ -1,2 +1,2 @@
 param([string]$Symbol = "")
-ragsharp-codegraph query symbols --db .codegraph/index.db --format json --limit 50 --symbol $Symbol
+ragsharp-graph query symbols --db .ragsharp/graph/index.db --format json --limit 50 --symbol $Symbol
