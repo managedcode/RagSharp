@@ -19,13 +19,16 @@ public sealed class CodeGraphIndexer
 
     public async Task<IndexResult> IndexAsync(string rootPath, CancellationToken cancellationToken)
     {
-        MSBuildLocator.RegisterDefaults();
+        if (!MSBuildLocator.IsRegistered && MSBuildLocator.CanRegister)
+        {
+            MSBuildLocator.RegisterDefaults();
+        }
         using var workspace = MSBuildWorkspace.Create();
 
         var solutionPath = FindSolution(rootPath);
         if (solutionPath is not null)
         {
-            var solution = await workspace.OpenSolutionAsync(solutionPath, cancellationToken).ConfigureAwait(false);
+            var solution = await workspace.OpenSolutionAsync(solutionPath, progress: null, cancellationToken).ConfigureAwait(false);
             return await BuildIndexAsync(rootPath, solution.Projects, cancellationToken).ConfigureAwait(false);
         }
 
@@ -35,7 +38,7 @@ public sealed class CodeGraphIndexer
             throw new InvalidOperationException("No .sln or .csproj found under the provided root.");
         }
 
-        var project = await workspace.OpenProjectAsync(projectPath, cancellationToken).ConfigureAwait(false);
+        var project = await workspace.OpenProjectAsync(projectPath, progress: null, cancellationToken).ConfigureAwait(false);
         return await BuildIndexAsync(rootPath, new[] { project }, cancellationToken).ConfigureAwait(false);
     }
 
@@ -159,7 +162,11 @@ public sealed class IndexState
     public string ToJson()
     {
         var payload = new IndexStatePayload { Files = new Dictionary<string, string>(Files) };
-        return System.Text.Json.JsonSerializer.Serialize(payload, new() { WriteIndented = true, PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase });
+        return System.Text.Json.JsonSerializer.Serialize(payload, new System.Text.Json.JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+        });
     }
 
     public static IndexState FromJson(string json)
@@ -218,6 +225,11 @@ internal sealed class GraphBuilder
         var root = tree.GetRoot();
         foreach (var usingDirective in root.DescendantNodes().OfType<UsingDirectiveSyntax>())
         {
+            if (usingDirective.Name is null)
+            {
+                continue;
+            }
+
             var name = usingDirective.Name.ToString();
             var nodeId = AddNode(NodeKind.UsingDirective, name, document.FilePath, GetLocation(_rootPath, usingDirective));
             AddEdge(EdgeKind.UsingDirective, documentNodeId, nodeId, GetLocation(_rootPath, usingDirective));

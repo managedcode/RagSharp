@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RagSharp.CodeGraph.Cli/RagSharp.CodeGraph.Cli.csproj" />
+    <Project Path="src/RagSharp.CodeGraph.Core/RagSharp.CodeGraph.Core.csproj" />
+    <Project Path="src/RagSharp.CodeGraph.Store.LiteGraph/RagSharp.CodeGraph.Store.LiteGraph.csproj" />
+    <Project Path="src/RagSharp.Packaging/RagSharp.Packaging.csproj" />
+    <Project Path="src/RagSharp.SkillInstaller/RagSharp.SkillInstaller.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RagSharp.CodeGraph.Tests/RagSharp.CodeGraph.Tests.csproj" />
+    <Project Path="tests/RagSharp.SkillInstaller.Tests/RagSharp.SkillInstaller.Tests.csproj" />
+  </Folder>
+</Solution>

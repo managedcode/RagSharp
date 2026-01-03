@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
@@ -18,7 +18,7 @@
     <ProjectReference Include="../RagSharp.SkillInstaller/RagSharp.SkillInstaller.csproj" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../RagSharp.CodeGraph.Cli/bin/$(Configuration)/net8.0/**" Pack="true" PackagePath="tools/net8.0/any/ragsharp-codegraph" />
-    <None Include="../RagSharp.SkillInstaller/bin/$(Configuration)/net8.0/**" Pack="true" PackagePath="tools/net8.0/any/ragsharp" />
+    <None Include="../RagSharp.CodeGraph.Cli/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp-codegraph" />
+    <None Include="../RagSharp.SkillInstaller/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp" />
   </ItemGroup>
 </Project>
