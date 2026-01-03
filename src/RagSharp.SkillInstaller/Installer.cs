@@ -76,7 +76,8 @@ public static class Installer
         }
 
         var manifest = JsonSerializer.Deserialize<InstallManifest>(await File.ReadAllTextAsync(manifestPath, cancellationToken).ConfigureAwait(false));
-        return new InstallStatus(true, manifest?.Version, manifest?.InstalledAtUtc, targetDir, manifest?.Files ?? Array.Empty<string>());
+        var files = manifest?.Files ?? new List<string>();
+        return new InstallStatus(true, manifest?.Version, manifest?.InstalledAtUtc, targetDir, files);
     }
 
     public static void RunDoctor(string root)

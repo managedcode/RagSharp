@@ -9,7 +9,7 @@ See the Codex skill specification at https://agentskills.io/specification.
 
 ## Requirements
 
-- .NET SDK 10 (primary) with multi-targeting to net8.0 for fallback.
+- .NET SDK 10 (only target).
 - Cross-platform (Windows/macOS/Linux).
 
 ## Install .NET 10
