@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ragsharp-codegraph</AssemblyName>
+    <RootNamespace>RagSharp.CodeGraph.Cli</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RagSharp.CodeGraph.Core/RagSharp.CodeGraph.Core.csproj" />
+    <ProjectReference Include="../RagSharp.CodeGraph.Store.LiteGraph/RagSharp.CodeGraph.Store.LiteGraph.csproj" />
+  </ItemGroup>
+</Project>

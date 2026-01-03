@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+    <PackageId>RagSharp</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>RagSharp</Authors>
+    <Description>RagSharp code graph skills installer and CLI tools.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://example.invalid/ragsharp</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RagSharp.CodeGraph.Cli/RagSharp.CodeGraph.Cli.csproj" PrivateAssets="all" />
+    <ProjectReference Include="../RagSharp.SkillInstaller/RagSharp.SkillInstaller.csproj" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../RagSharp.CodeGraph.Cli/bin/$(Configuration)/net8.0/**" Pack="true" PackagePath="tools/net8.0/any/ragsharp-codegraph" />
+    <None Include="../RagSharp.SkillInstaller/bin/$(Configuration)/net8.0/**" Pack="true" PackagePath="tools/net8.0/any/ragsharp" />
+  </ItemGroup>
+</Project>
