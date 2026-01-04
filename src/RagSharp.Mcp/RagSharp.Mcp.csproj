@@ -1,11 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ragsharp-mcp</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <PackageId>RagSharp.Mcp</PackageId>
+    <RootNamespace>RagSharp.Mcp</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../RagSharp.CodeGraph.Core/RagSharp.CodeGraph.Core.csproj" />
-    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <ProjectReference Include="../RagSharp.CodeGraph.Store.LiteGraph/RagSharp.CodeGraph.Store.LiteGraph.csproj" />
   </ItemGroup>
 </Project>

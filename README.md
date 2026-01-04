@@ -4,7 +4,8 @@ RagSharp is a deterministic, offline-capable toolkit for indexing and querying C
 It ships as a single NuGet package that provides two command-line tools:
 
 - `ragsharp` — installs/uninstalls Codex skills into a repository.
-- `ragsharp-graph` — builds and queries a code graph index for fast, structured lookups.
+- `ragsharp graph ...` — builds and queries a code graph index for fast, structured lookups.
+- `ragsharp-mcp` — JSON-RPC MCP server exposing doctor/index/update/query/export over the code graph.
 
 See the Codex skill specification at https://agentskills.io/specification.
 
@@ -62,17 +63,33 @@ ragsharp install --root . --skill-dir .codex/skills
 Build and query the graph:
 
 ```bash
-ragsharp-graph doctor --root .
+ragsharp graph doctor --root .
 
-ragsharp-graph index --root . --db .ragsharp/graph/index.db --state .ragsharp/graph/state.json
+ragsharp graph index --root . --db .ragsharp/graph/index.db --state .ragsharp/graph/state.json
 
-ragsharp-graph query symbols --db .ragsharp/graph/index.db --format json --limit 50 --symbol "Greeter"
+ragsharp graph query --type symbols --db .ragsharp/graph/index.db --limit 50 --symbol "Greeter"
 ```
 
 Export the graph:
 
 ```bash
-ragsharp-graph export --db .ragsharp/graph/index.db --format dot --out .ragsharp/graph/graph.dot
+ragsharp graph export --db .ragsharp/graph/index.db --format dot --out .ragsharp/graph/graph.dot
+
+## MCP server quickstart
+
+Start the server (reads stdin/writes stdout) and send JSON-RPC:
+
+```
+ragsharp-mcp
+```
+
+Example request (doctor):
+
+```json
+{"jsonrpc":"2.0","id":1,"method":"doctor","params":{"root":"."}}
+```
+
+Supported methods: `doctor`, `index`, `update`, `query`, `export` (parameters match CLI options: root/db/state/includeDataflow/symbol/kind/document/edgeKind/limit/contextLines/format/output).
 ```
 
 ## CLI reference
@@ -82,12 +99,12 @@ ragsharp-graph export --db .ragsharp/graph/index.db --format dot --out .ragsharp
 - `ragsharp install --root <path> --skill-dir <path>` — install skills.
 - `ragsharp uninstall --root <path> --skill-dir <path>` — uninstall skills.
 
-### `ragsharp-graph`
+### `ragsharp graph`
 
 - `doctor` — verify the environment and print the repository root.
 - `index` — build a fresh index.
 - `update` — incrementally update the index and remove deleted files.
-- `query <type>` — query the index (`symbols`, `usings`, etc.) and emit JSON.
+- `query --type <type>` — query the index (`symbols`, `usings`, etc.) and emit JSON.
 - `export` — export the graph as `dot` or `gexf`.
 
 ## Output locations

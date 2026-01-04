@@ -15,11 +15,11 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../RagSharp.CodeGraph.Cli/RagSharp.CodeGraph.Cli.csproj" PrivateAssets="all" />
     <ProjectReference Include="../RagSharp.SkillInstaller/RagSharp.SkillInstaller.csproj" PrivateAssets="all" />
+    <ProjectReference Include="../RagSharp.Mcp/RagSharp.Mcp.csproj" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../RagSharp.CodeGraph.Cli/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp-graph" />
     <None Include="../RagSharp.SkillInstaller/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp" />
+    <None Include="../RagSharp.Mcp/bin/$(Configuration)/net10.0/**" Pack="true" PackagePath="tools/net10.0/any/ragsharp-mcp" />
   </ItemGroup>
 </Project>

@@ -66,10 +66,11 @@ public sealed record QueryRequest(
     string? Symbol,
     string? Kind,
     string? Document,
+    string? EdgeKind,
     int Limit,
     int ContextLines);
 
 public static class SchemaConstants
 {
-    public const string CurrentVersion = "1";
+    public const string CurrentVersion = "2";
 }

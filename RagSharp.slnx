@@ -5,6 +5,7 @@
     <Project Path="src/RagSharp.CodeGraph.Store.LiteGraph/RagSharp.CodeGraph.Store.LiteGraph.csproj" />
     <Project Path="src/RagSharp.Packaging/RagSharp.Packaging.csproj" />
     <Project Path="src/RagSharp.SkillInstaller/RagSharp.SkillInstaller.csproj" />
+    <Project Path="src/RagSharp.Mcp/RagSharp.Mcp.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/RagSharp.CodeGraph.Tests/RagSharp.CodeGraph.Tests.csproj" />

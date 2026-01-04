@@ -133,7 +133,8 @@ public sealed class CodeGraphIndexer
 
     private static string? FindSolution(string rootPath)
     {
-        return Directory.EnumerateFiles(rootPath, "*.sln", SearchOption.TopDirectoryOnly).FirstOrDefault();
+        return Directory.EnumerateFiles(rootPath, "*.slnx", SearchOption.TopDirectoryOnly).FirstOrDefault()
+            ?? Directory.EnumerateFiles(rootPath, "*.sln", SearchOption.TopDirectoryOnly).FirstOrDefault();
     }
 
     private static string? FindProject(string rootPath)
@@ -187,6 +188,7 @@ internal sealed class GraphBuilder
     private readonly bool _includeDataflow;
     private readonly List<GraphNode> _nodes = new();
     private readonly List<GraphEdge> _edges = new();
+    private readonly Dictionary<(NodeKind Kind, string Key), long> _nodeIndex = new(new NodeKeyComparer());
     private long _nextNodeId = 1;
     private long _nextEdgeId = 1;
     private readonly Dictionary<string, long> _documentNodes = new(StringComparer.OrdinalIgnoreCase);
@@ -290,6 +292,28 @@ internal sealed class GraphBuilder
             AddEdge(EdgeKind.MethodInvocation, documentNodeId, targetNodeId, GetLocation(_rootPath, invocation));
         }
 
+        foreach (var nameSyntax in root.DescendantNodes().OfType<SimpleNameSyntax>())
+        {
+            var symbol = semanticModel.GetSymbolInfo(nameSyntax).Symbol;
+            if (symbol is null)
+            {
+                continue;
+            }
+
+            if (symbol is INamedTypeSymbol typeSymbol)
+            {
+                var typeNodeId = AddNode(NodeKind.Type, typeSymbol.Name, document.FilePath, null, typeSymbol.ToDisplayString());
+                AddEdge(EdgeKind.TypeReference, documentNodeId, typeNodeId, GetLocation(_rootPath, nameSyntax));
+                continue;
+            }
+
+            if (symbol is IMethodSymbol or IPropertySymbol or IFieldSymbol or IEventSymbol)
+            {
+                var memberNodeId = AddNode(NodeKind.Member, symbol.Name, document.FilePath, null, symbol.ToDisplayString());
+                AddEdge(EdgeKind.MemberReference, documentNodeId, memberNodeId, GetLocation(_rootPath, nameSyntax));
+            }
+        }
+
         foreach (var attribute in root.DescendantNodes().OfType<AttributeSyntax>())
         {
             var symbol = semanticModel.GetSymbolInfo(attribute).Symbol?.ContainingType;
@@ -300,6 +324,23 @@ internal sealed class GraphBuilder
 
             var attrNodeId = AddNode(NodeKind.Type, symbol.Name, document.FilePath, null, symbol.ToDisplayString());
             AddEdge(EdgeKind.AttributeUsage, documentNodeId, attrNodeId, GetLocation(_rootPath, attribute));
+        }
+
+        foreach (var identifier in root.DescendantNodes().OfType<IdentifierNameSyntax>())
+        {
+            var symbol = semanticModel.GetSymbolInfo(identifier).Symbol;
+            if (symbol is ITypeSymbol typeSymbol)
+            {
+                var targetNodeId = AddNode(NodeKind.Type, typeSymbol.Name, typeSymbol.Locations.FirstOrDefault()?.SourceTree?.FilePath ?? document.FilePath, null, typeSymbol.ToDisplayString());
+                AddEdge(EdgeKind.TypeReference, documentNodeId, targetNodeId, GetLocation(_rootPath, identifier));
+                continue;
+            }
+
+            if (symbol is IMethodSymbol or IPropertySymbol or IFieldSymbol or IEventSymbol)
+            {
+                var targetNodeId = AddNode(NodeKind.Member, symbol.Name, symbol.Locations.FirstOrDefault()?.SourceTree?.FilePath ?? document.FilePath, null, symbol.ToDisplayString());
+                AddEdge(EdgeKind.MemberReference, documentNodeId, targetNodeId, GetLocation(_rootPath, identifier));
+            }
         }
 
         if (_includeDataflow)
@@ -337,9 +378,27 @@ internal sealed class GraphBuilder
 
     private long AddNode(NodeKind kind, string name, string? documentPath, LocationSpan? location, string? fullyQualifiedName = null)
     {
-        var node = new GraphNode(_nextNodeId++, kind, name, fullyQualifiedName, documentPath is null ? null : Path.GetRelativePath(_rootPath, documentPath), location);
+        var relativeDoc = documentPath is null ? null : Path.GetRelativePath(_rootPath, documentPath);
+        var key = BuildNodeKey(kind, fullyQualifiedName, relativeDoc, name);
+        if (_nodeIndex.TryGetValue((kind, key), out var existingId))
+        {
+            return existingId;
+        }
+
+        var node = new GraphNode(_nextNodeId++, kind, name, fullyQualifiedName, relativeDoc, location);
         _nodes.Add(node);
+        _nodeIndex[(kind, key)] = node.Id;
         return node.Id;
+    }
+
+    private static string BuildNodeKey(NodeKind kind, string? fullyQualifiedName, string? documentPath, string name)
+    {
+        if (!string.IsNullOrEmpty(fullyQualifiedName))
+        {
+            return fullyQualifiedName;
+        }
+
+        return $"{documentPath ?? "<root>"}::{name}";
     }
 
     private void AddEdge(EdgeKind kind, long sourceId, long targetId, LocationSpan? location)
@@ -360,5 +419,18 @@ internal sealed class GraphBuilder
             StartColumn: start.Character + 1,
             EndLine: end.Line + 1,
             EndColumn: end.Character + 1);
+    }
+
+    private sealed class NodeKeyComparer : IEqualityComparer<(NodeKind Kind, string Key)>
+    {
+        public bool Equals((NodeKind Kind, string Key) x, (NodeKind Kind, string Key) y)
+        {
+            return x.Kind == y.Kind && StringComparer.OrdinalIgnoreCase.Equals(x.Key, y.Key);
+        }
+
+        public int GetHashCode((NodeKind Kind, string Key) obj)
+        {
+            return HashCode.Combine(obj.Kind, StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Key));
+        }
     }
 }

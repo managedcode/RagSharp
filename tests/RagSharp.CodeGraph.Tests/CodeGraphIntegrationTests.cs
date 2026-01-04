@@ -13,7 +13,7 @@ public sealed class CodeGraphIntegrationTests
     {
         var context = await GetContextAsync();
         var query = await context.Store.QueryAsync(
-            new QueryRequest("symbols", className, NodeKind.Type.ToString(), null, 5, 0),
+            new QueryRequest("symbols", className, NodeKind.Type.ToString(), null, null, 5, 0),
             CancellationToken.None);
 
         await Assert.That(query.Nodes.Any(node => node.Name == className)).IsTrue();
@@ -46,10 +46,32 @@ public sealed class CodeGraphIntegrationTests
     {
         var context = await GetContextAsync();
         var query = await context.Store.QueryAsync(
-            new QueryRequest("usings", "System", NodeKind.UsingDirective.ToString(), null, 5, 0),
+            new QueryRequest("usings", "System", NodeKind.UsingDirective.ToString(), null, null, 5, 0),
             CancellationToken.None);
 
         await Assert.That(query.Nodes.Any(node => node.Name == "System")).IsTrue();
+    }
+
+    [Test]
+    public async Task GraphCapturesTypeReferences()
+    {
+        var context = await GetContextAsync();
+        var query = await context.Store.QueryAsync(
+            new QueryRequest("references", null, null, "ReferenceUsers.cs", EdgeKind.TypeReference.ToString(), 50, 0),
+            CancellationToken.None);
+
+        await Assert.That(query.Edges.Any(e => e.Kind == EdgeKind.TypeReference)).IsTrue();
+    }
+
+    [Test]
+    public async Task GraphCapturesMemberReferences()
+    {
+        var context = await GetContextAsync();
+        var query = await context.Store.QueryAsync(
+            new QueryRequest("references", null, null, "ReferenceUsers.cs", EdgeKind.MemberReference.ToString(), 50, 0),
+            CancellationToken.None);
+
+        await Assert.That(query.Edges.Any(e => e.Kind == EdgeKind.MemberReference)).IsTrue();
     }
 
     [Test]
@@ -172,6 +194,21 @@ public sealed class {{name}}
 
             await File.WriteAllTextAsync(Path.Combine(projectDir, $"{name}.cs"), code);
         }
+
+        await File.WriteAllTextAsync(Path.Combine(projectDir, "ReferenceUsers.cs"), """
+namespace GeneratedProject;
+
+public sealed class ReferenceUsers
+{
+    public GeneratedClass001 Build() => new GeneratedClass001();
+
+    public string ReadTag()
+    {
+        var instance = new GeneratedClass001();
+        return instance.Tag;
+    }
+}
+""");
 
         var indexer = new CodeGraphIndexer(includeDataflow: false);
         var result = await indexer.IndexAsync(projectDir, CancellationToken.None);

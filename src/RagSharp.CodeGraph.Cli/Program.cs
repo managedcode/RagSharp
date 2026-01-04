@@ -119,6 +119,7 @@ public static class Program
             Symbol: options.GetValueOrDefault("--symbol"),
             Kind: options.GetValueOrDefault("--kind"),
             Document: options.GetValueOrDefault("--document"),
+            EdgeKind: options.GetValueOrDefault("--edge-kind"),
             Limit: int.TryParse(options.GetValueOrDefault("--limit"), out var limit) ? limit : 100,
             ContextLines: int.TryParse(options.GetValueOrDefault("--context-lines"), out var context) ? context : 2);
 
@@ -136,7 +137,7 @@ public static class Program
 
         var store = new LiteGraphStore(dbPath);
         await store.InitializeAsync(CancellationToken.None).ConfigureAwait(false);
-        var result = await store.QueryAsync(new QueryRequest("export", null, null, null, 10000, 0), CancellationToken.None).ConfigureAwait(false);
+        var result = await store.QueryAsync(new QueryRequest("export", null, null, null, null, 10000, 0), CancellationToken.None).ConfigureAwait(false);
 
         Directory.CreateDirectory(Path.GetDirectoryName(output) ?? ".");
         if (format.Equals("gexf", StringComparison.OrdinalIgnoreCase))

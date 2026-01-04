@@ -10,7 +10,11 @@
     <RootNamespace>RagSharp.SkillInstaller</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RagSharp.CodeGraph.Core/RagSharp.CodeGraph.Core.csproj" />
+    <ProjectReference Include="../RagSharp.CodeGraph.Store.LiteGraph/RagSharp.CodeGraph.Store.LiteGraph.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\assets\skill-templates\**\*">

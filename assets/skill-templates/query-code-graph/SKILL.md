@@ -5,5 +5,5 @@ description: |
   Triggers: find usages, where defined, callers, callees, dependency path, project deps, type hierarchy, line numbers, evidence.
 ---
 ## Steps
-1. Run `ragsharp-graph query symbols --db .ragsharp/graph/index.db --format json --limit 50 --symbol "SymbolName"`.
+1. Run `ragsharp graph query --type symbols --db .ragsharp/graph/index.db --limit 50 --symbol "SymbolName"`.
 2. Use the JSON output to answer questions with file:line-range evidence.

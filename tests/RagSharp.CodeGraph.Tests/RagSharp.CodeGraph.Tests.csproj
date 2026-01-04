@@ -10,7 +10,7 @@
     <UseMSBuildTestInfrastructure>true</UseMSBuildTestInfrastructure>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TUnit" Version="1.8.1" />
+    <PackageReference Include="TUnit" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/RagSharp.CodeGraph.Core/RagSharp.CodeGraph.Core.csproj" />

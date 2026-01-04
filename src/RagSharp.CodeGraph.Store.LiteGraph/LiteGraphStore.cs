@@ -163,11 +163,13 @@ LIMIT $limit;";
 
         var edgeCommand = _connection.CreateCommand();
         edgeCommand.CommandText = @"
-SELECT id, kind, sourceId, targetId, filePathRelative, startLine, startColumn, endLine, endColumn
-FROM edges
-WHERE ($symbol IS NULL OR filePathRelative LIKE $symbol)
-LIMIT $limit;";
-        edgeCommand.Parameters.AddWithValue("$symbol", (object?)request.Document is null ? DBNull.Value : $"%{request.Document}%");
+    SELECT id, kind, sourceId, targetId, filePathRelative, startLine, startColumn, endLine, endColumn
+    FROM edges
+    WHERE ($edgeKind IS NULL OR kind = $edgeKind)
+      AND ($document IS NULL OR filePathRelative LIKE $document)
+    LIMIT $limit;";
+        edgeCommand.Parameters.AddWithValue("$edgeKind", (object?)request.EdgeKind ?? DBNull.Value);
+        edgeCommand.Parameters.AddWithValue("$document", (object?)request.Document is null ? DBNull.Value : $"%{request.Document}%");
         edgeCommand.Parameters.AddWithValue("$limit", request.Limit);
 
         using (var reader = await edgeCommand.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
