@@ -74,6 +74,7 @@ Export the graph:
 
 ```bash
 ragsharp graph export --db .ragsharp/graph/index.db --format dot --out .ragsharp/graph/graph.dot
+```
 
 ## MCP server quickstart
 
@@ -90,7 +91,6 @@ Example request (doctor):
 ```
 
 Supported methods: `doctor`, `index`, `update`, `query`, `export` (parameters match CLI options: root/db/state/includeDataflow/symbol/kind/document/edgeKind/limit/contextLines/format/output).
-```
 
 ## CLI reference
 
